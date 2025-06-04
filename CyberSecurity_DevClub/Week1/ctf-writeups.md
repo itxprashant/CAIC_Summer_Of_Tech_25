@@ -72,3 +72,26 @@ Since there is no file visible directly containing the flag, I checked for the c
 There is a commit with message `sensitive file added` after which there is `flag removed`.
 So using `git --reset <commit-id>` and going to that commit reveals the flag.
 
+## Bring Back from the Dead
+
+**Approach**
+First I tried mounting the `challenge.img` file, using `sudo mkdir /mnt/challenge && sudo mount -o loop challenge.img /mnt/challenge`.
+Then searching in that path led to nowhere as the flag was deleted.
+So I explored on the internet, and got to know about `foremost` tool. Using `foremost -i challenge.img -o recovered_data`.
+It created a recovered_data folder which includes the flag as png.
+Alternate approach is to use a hex editor to remove all unnecessary zeros before the png headers.
+
+
+## Binary Directory
+
+**Approach**
+After extracting the archive, I explorer some of the files and got to know some of them contained zeros and some contain ones (fewer ones).
+So, I used `grep -r "1"` to get all the paths containing 1. Then I piped it to `sort` to get it sorted.
+The path contained sequences of zeros and ones, removing all the slashes gave me sequences of 8-bit binary numbers.
+Converting that to ASCII gave me the flag.
+
+## Event digger
+
+**Approach**
+First converting the string from base64 to decimal gave me the sequence of numbers. Some of them are ASCII characters.
+For rest of them I used the js-event codes as given in the hint to find the hidden characters after which I arrived on the flag.
