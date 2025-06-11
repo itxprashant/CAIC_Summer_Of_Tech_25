@@ -19,57 +19,84 @@ app.use(express.json());
 
 // schema
 const userSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    password: String
+    name: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        match: /.+\@.+\..+/ // simple email validation
+    },
+    password: {
+        type: String,
+        required: true,
+        minlength: 6 // minimum password length
+    }
 });
 
-function createUser(name, email, password) {
+async function createUser(name, email, password) {
     const User = mongoose.model('User', userSchema);
 
-    // hash password using bcrypt
-    bcrypt.hash(password, saltRounds, function(err, hash) {
-        if (err) throw err;
-        password = hash;
-    });
+    try {
+        // Hash password using bcrypt
+        const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
-    const user = new User({ name, email, password });
+        // create new user instance
+        const user = new User({ name, email, password: hashedPassword });
 
-    // add user to mongodb database
-    user.save()
-        .then(() => {
-            console.log('User created successfully');
-        })
-        .catch(err => {
-            console.error('Error creating user:', err);
-        });
+        // save user to mongodb database
+        await user.save();
+        console.log('User created successfully');
+    } catch (err) {
+        console.error('Error creating user:', err);
+    }
+
+    // // hash password using bcrypt
+    // bcrypt.hash(password, saltRounds, function(err, hash) {
+    //     if (err) throw err;
+    //     password = hash;
+    // });
+
+    // const user = new User({ name, email, password });
+
+    // // add user to mongodb database
+    // user.save()
+    //     .then(() => {
+    //         console.log('User created successfully');
+    //     })
+    //     .catch(err => {
+    //         console.error('Error creating user:', err);
+    //     });
 
 }
 
-function authenticateUser(email, password) {
-    // 0: success, 1: user not found, 2: password mismatch
+async function authenticateUser(email, password) {
+   // 0: success, 1: user not found, 2: password mismatch
 
     const User = mongoose.model('User', userSchema);
 
-    User.findOne({ email: email }, function(err, user) {
-        if (err) throw err;
+    try {
+        const user = await User.findOne({ email: email });
         if (!user) {
             console.log('No user found with that email');
             return 1;
         }
 
         // compare password with hashed password
-        bcrypt.compare(password, user.password, function(err, result) {
-            if (err) throw err;
-            if (result) {
-                console.log('Authentication successful');
-                return 0;
-            } else {
-                console.log('Authentication failed');
-                return 2;
-            }
-        });
-    });
+        const result = await bcrypt.compare(password, user.password);
+        if (result) {
+            console.log('Authentication successful');
+            return 0;
+        } else {
+            console.log('Authentication failed');
+            return 2;
+        }
+    } catch (err) {
+        console.error('Error during authentication:', err);
+        throw err;
+}
 }
 
 function deleteUser(email){
@@ -152,7 +179,7 @@ app.get('/users', (req, res) => {
 });
 
 // test function to create a user
-createUser("John", "john@gmail.com", "password");
+// createUser("kyran", "kyran@gmail.com", "password");
 
 // test function to authenticate a user
-authenticateUser("john@gmail.com", "password");
+// authenticateUser("kyran@gmail.com", "password");
