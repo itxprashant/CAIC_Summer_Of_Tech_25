@@ -7,3 +7,7 @@ CS_Research_ARIES_X_ACES_ACM/Week-2/data/FashionMNIST/raw/train-images-idx3-ubyt
 CS_Research_ARIES_X_ACES_ACM/Week-2/data/FashionMNIST/raw/train-images-idx3-ubyte.gz
 CS_Research_ARIES_X_ACES_ACM/Week-2/data/FashionMNIST/raw/train-labels-idx1-ubyte
 CS_Research_ARIES_X_ACES_ACM/Week-2/data/FashionMNIST/raw/train-labels-idx1-ubyte.gz
+FullStack_DevClub/src/node_modules
+FullStack_DevClub/src/package-lock.json
+FullStack_DevClub/src/.package-lock.json
+FullStack_DevClub/src/node_modules/.package-lock.json
