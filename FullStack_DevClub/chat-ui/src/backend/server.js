@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
 
-
 const saltRounds = 10;
 
 mongoose.connect('mongodb://localhost:27017/mydatabase', {
@@ -18,6 +17,9 @@ mongoose.connect('mongodb://localhost:27017/mydatabase', {
 });
 
 app.use(express.json());
+app.use(cors({
+    origin: "*",
+}))
 
 // schema
 const userSchema = new mongoose.Schema({
